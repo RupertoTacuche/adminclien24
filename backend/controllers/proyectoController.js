@@ -17,7 +17,12 @@ const nuevoProyecto = async (req, res) => {
 }
 
 const obtenerProyecto = async (req, res) => {
-
+    const { id } = req.params
+    const proyecto = await Proyecto.findById(id)
+    if(!proyecto){
+        return res.status(400).json({msg: "No Encontrado"});
+    }
+    res.json(proyecto)
 }
 
 const editarProyecto = async (req, res) => {
