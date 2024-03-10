@@ -18,18 +18,29 @@ const nuevoProyecto = async (req, res) => {
 }
 
 
- 
+ // Aqui empieza obtener proyecto
+// OBTENER UN PROYECTO
 const obtenerProyecto = async (req, res) => {
-  const { id } = req.params
-  if(!isValidObjectId(id)){
-      return res.status(400).json({msg: "No es un id valido"});
-  }
-  const proyecto = await Proyecto.findById(id)
-  if(!proyecto){
-      return res.status(400).json({msg: "No Encontrado"});
-  }
-  res.json(proyecto)
-}
+    const { usuario } = req;
+    const { id } = req.params;
+    try {
+     if(!isValidObjectId(id)){
+        return res.status(400).json({msg: "No es un id valido"});
+      }
+      const proyecto = await Proyecto.findById(id)
+   
+      if ( proyecto.creador.toString() !== usuario._id.toString() ) {
+        const error = new Error("Accion no valida");
+        return res.status(403).json({ msg: error.message });
+      }
+   
+      res.json(proyecto);
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ msg: "Proyecto no encontrado" });
+    }
+  };
+//aqui termina obtener proyecto
 
 const editarProyecto = async (req, res) => {
     
